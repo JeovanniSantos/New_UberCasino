@@ -16,6 +16,7 @@ int main ( int argc, char* argv[] )
 {
    // create the dealer object
    dealer D = dealer ();
+   D.SetDeck(2);
    PTR = &D;
    // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();

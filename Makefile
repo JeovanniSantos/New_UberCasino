@@ -31,8 +31,8 @@ COMMON_CPP= src/CheckStatus.cpp src/DDSEntityManager.cpp
 
 COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.h 
 
-DEALER_FILES = src/dealer.cpp
-DEALER_H_FILES = src/dealer.h
+DEALER_FILES = src/dealer.cpp src/deck.cpp
+DEALER_H_FILES = src/dealer.h src/deck.h
 
 PLAYER_FILES = src/player.cpp
 PLAYER_H_FILES = src/player.h

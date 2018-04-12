@@ -1,0 +1,48 @@
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 17:31:22 CDT 2018
+Description : Splice-daemon failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 1230.197871609 s.
+Node        : fedora27.lab.local
+Process     : Player <19928>
+Thread      : OSPL Lease Renew Thread 7ff674c77700
+Internals   : V6.4.140320OSS/24b1387/24b1387/OpenSplice domain service/spliced.c/153/0/1523485882.360605206
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 17:31:22 CDT 2018
+Description : Durability failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 1230.198203940 s.
+Node        : fedora27.lab.local
+Process     : Player <19928>
+Thread      : leaseThread 7ff6749e8700
+Internals   : V6.4.140320OSS/24b1387/24b1387/Durability Service/d_durability.c/182/0/1523485882.858695166
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 17:31:23 CDT 2018
+Description : Splice-daemon failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 1230.198033595 s.
+Node        : fedora27.lab.local
+Process     : Dealer <20013>
+Thread      : OSPL Lease Renew Thread 7fa0dc937700
+Internals   : V6.4.140320OSS/24b1387/24b1387/OpenSplice domain service/spliced.c/153/0/1523485883.609538306
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 17:31:23 CDT 2018
+Description : Durability failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 1230.197773916 s.
+Node        : fedora27.lab.local
+Process     : Dealer <20013>
+Thread      : leaseThread 7fa0dc631700
+Internals   : V6.4.140320OSS/24b1387/24b1387/Durability Service/d_durability.c/182/0/1523485883.829214723
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 21:04:40 CDT 2018
+Description : Splice-daemon failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 4926.919059067 s.
+Node        : fedora27.lab.local
+Process     : Player <20552>
+Thread      : OSPL Lease Renew Thread 7fe8decd3700
+Internals   : V6.4.140320OSS/24b1387/24b1387/OpenSplice domain service/spliced.c/153/0/1523498680.504367969
+========================================================================================
+Report      : ERROR
+Date        : Wed Apr 11 21:04:41 CDT 2018
+Description : Durability failed to renew its lease within the configured lease expiry-time (10.000000000). The lease renewal took 4926.921581397 s.
+Node        : fedora27.lab.local
+Process     : Player <20552>
+Thread      : leaseThread 7fe8dea44700
+Internals   : V6.4.140320OSS/24b1387/24b1387/Durability Service/d_durability.c/182/0/1523498681.665874909

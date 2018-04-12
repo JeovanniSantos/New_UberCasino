@@ -6,6 +6,7 @@
 #include <boost/thread.hpp>
 
 #include "dealer.h"
+#include <mutex>
 
 #define TIMER(SECS) \
     if ( m_timer_thread )\
@@ -16,8 +17,32 @@
     }\
     m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &dealer::timer_expired , this ) );\
 
+//std::mutex m;
 
+/*** Function to Setup Deck ***/ //need to update
+void dealer::SetDeck(int option){
+  deck.SetDeckType(option);
+}
 
+/*** Function to check if player already exists in a Game ***/
+bool dealer::playerExists(char * uid){
+  bool found = false;
+  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+  {
+    if(strcmp(m_G_pub.p[ i ].uid, uid) == 0){
+      found = true;
+    }
+  }
+  return found;
+}
+
+/*** Function to Return a card from deck ***/
+UberCasino::card_t dealer::dealCard(){
+  return deck.deal_a_card();
+}
+
+//return total value of the cards with the value of ace count as 1 
+//smallest total value
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
    // given an array of cards, returns the point value
@@ -47,17 +72,43 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
    return total;
 }
 
-UberCasino::card_t Next_Card ()
+//return total value of the cards 
+unsigned int card_value(UberCasino::card_t cards[]){
+  unsigned int number_of_ace=0;
+  unsigned int card_value=0;
+  for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   {
+      if ( cards[i].valid )
+      {
+         if (cards[i].card==ace){
+            number_of_ace++;
+         }
+       }
+    }
+  
+   card_value = Hand_Value ( cards);// card_value now is smallest value
+
+   if(card_value>=21) return card_value;
+
+   while(number_of_ace>0)
+   {
+     if(card_value + 10 > 21){     //check to see if the count 1 ace as 11 will go over 21
+       return card_value;          //if it is bigger than 21, do not increment it 
+     }
+     else{
+       card_value += 10;           //if it is less than 21, increment card_value, decrement the number_of_ace
+       number_of_ace--;
+     }
+   }
+   return card_value;
+}
+
+UberCasino::card_t dealer::Next_Card ()
 {
-   static int count=0;
-   static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   retval.card = two;
-   count++;
-   if (count>3)
-     count = 0;
-   retval.suite = lut[count];
+   //retrieve a card from the deck 
+   retval = this->dealCard();
    retval.valid = true;
    return retval;
 }
@@ -74,11 +125,13 @@ void dealer::lock ()
   std::cout << "****************************************" << std::endl;
   // pthread mutex works well
   // suggest you put it in if needed
+  //m.lock();
 }
 
 void dealer::unlock ()
 {
   // see remarks under lock(), above
+  //m.unlock();
 }
 
 std::string dealer::to_string ( dealer_state_t d )
@@ -143,6 +196,11 @@ void dealer::manage_state ()
             next_state = StartHand;
             transition = true;
          }
+         if ( m_user_event ) //Dealer can manually start the game 
+         {
+            next_state = StartHand;
+            transition = true;
+         }
          break;
       case StartHand:
          if ( m_timer_event )
@@ -202,8 +260,8 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
              std::cout << "Waiting: Exit" << std::endl;
 #endif
-             // start a 10 second timer
-             TIMER(10);
+             // start a 30 second timer to wait for players
+             TIMER(30);
           }
           break;
        case WaitingForOthers:
@@ -268,11 +326,12 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
              std::cout << "WaitingForOther: Entry" << std::endl;
 #endif
-             // if there is room, need to accept the 
-             // new player
+             // if there is room and the player does not already exist, need to accept the 
+             // new player.
              if (  ( m_Player_recv ) && 
                    ( m_P_sub.A == idle ) && 
-                   ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME ) )
+                   ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME ) &&
+                   (!playerExists(m_P_sub.uid) ))
              {
                  m_G_pub.gstate = waiting_to_join;
                  // the UID's don't change, so they can be copied again
@@ -330,7 +389,7 @@ void dealer::manage_state ()
              if ( m_P_sub.A == standing )
              {
                  std::cout << "The player is standing with " 
-                           << Hand_Value ( m_G_pub.p[ m_G_pub.active_player ].cards)
+                           << card_value ( m_G_pub.p[ m_G_pub.active_player ].cards) // changed Hand_Value() to card_value()
                            << std::endl;
                  // go to next player
                  if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players )
@@ -366,7 +425,7 @@ void dealer::manage_state ()
             // note: except for purists, dealing a card face down or
             // waiting to deal it now makes no difference.
             unsigned int i=1;
-            while ( Hand_Value ( m_G_pub.dealer_cards ) < 17 )
+            while ( card_value ( m_G_pub.dealer_cards ) < 17 ) //changed Hand_Value to card_value
             {
                m_G_pub.dealer_cards[i] = Next_Card ();
                i++;

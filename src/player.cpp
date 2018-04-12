@@ -1,7 +1,7 @@
 #include <iostream>
 #include <functional>
 #include <cstdlib>
-
+#include <mutex>
 
 #include <boost/thread.hpp>
 #define TIMER(SECS) \
@@ -14,6 +14,8 @@
     m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &player::timer_expired , this ) );\
 
 #include "player.h"
+
+//std::mutex p;
 
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
@@ -47,6 +49,37 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
    return total;
 }
 
+//return total value of the cards 
+unsigned int card_value(UberCasino::card_t cards[]){
+  unsigned int number_of_ace=0;
+  unsigned int card_value=0;
+  for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   {
+      if ( cards[i].valid )
+      {
+         if (cards[i].card==ace){
+            number_of_ace++;
+         }
+       }
+    }
+  
+   card_value = Hand_Value ( cards);// card_value now is smallest value
+
+   if(card_value>=21) return card_value;
+
+   while(number_of_ace>0)
+   {
+     if(card_value + 10 > 21){     //check to see if the count 1 ace as 11 will go over 21
+       return card_value;          //if it is bigger than 21, do not increment it 
+     }
+     else{
+       card_value += 10;           //if it is less than 21, increment card_value, decrement the number_of_ace
+       number_of_ace--;
+     }
+   }
+   return card_value;
+}
+
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
@@ -60,11 +93,13 @@ void player::lock ()
   // a lock may be needed.  The fltk lock or something
   // like pthread_mutex() should work fine.
   std::cout << "****************************************" << std::endl;
+  //p.lock();
 }
 
 void player::unlock ()
 {
   // see comments under the lock () method
+  //p.unlock();
 }
 
 std::string player::to_string ( player_state_t p )
@@ -245,7 +280,7 @@ void player::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "Playing: Entry " << std::endl;
 #endif
-            unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
+            unsigned int value = card_value ( m_G.p[m_G.active_player].cards );
             std::cout << "The value of my hand is "<< value << std::endl;
             if ( value > 11 )
             {
@@ -270,8 +305,8 @@ void player::manage_state ()
             {
               std::cout << "The dealer says end of hand." << std::endl;
               // calculate win or lose
-              int dealer_points = Hand_Value ( m_G.dealer_cards );
-              int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
+              int dealer_points = card_value ( m_G.dealer_cards );
+              int player_points = card_value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
               if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
               {

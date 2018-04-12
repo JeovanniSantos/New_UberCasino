@@ -7,12 +7,14 @@
 #include <boost/uuid/uuid.hpp>            // uuid class
 
 #include "io.h"
+#include "deck.h"
 
 
 
 class dealer
 {
    private:
+      Deck deck;
       void new_game ();
       void next_player ();
       void deal_to_dealer ();
@@ -20,6 +22,7 @@ class dealer
       // look at the state diagram to understand the states
       enum dealer_state_t {Init,Waiting,WaitingForOthers,StartHand,Deal,EndHand,Done} m_dealer_state;
       void manage_state ();
+      bool playerExists(char * uid);
       unsigned int m_number_of_players;
       bool m_timer_event;
       bool m_user_event;
@@ -59,6 +62,12 @@ class dealer
       void external_data ( Dealer );
       void external_data ( Game G );
       void setuuid ( boost::uuids::uuid uuid );
+      void SetDeck(int option);
+      UberCasino::card_t Next_Card();
+      Deck GetDeck(){
+        return deck;
+      }
+      UberCasino::card_t dealCard();
       void user_input ( std::string );
       dealer ();
       ~dealer ();

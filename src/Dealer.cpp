@@ -21,8 +21,15 @@ int main ( int argc, char* argv[] )
    // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    memcpy ( D.m_D_pub.uid, &uuid, sizeof ( D.m_D_pub.uid ) );
-   strncpy ( D.m_D_pub.name,"Bud",sizeof ( D.m_D_pub.name ) );
-   // should this be entered by the user. probably!
+
+   if ( argc == 1 ) // meaning there are none
+   {
+      strncpy ( D.m_D_pub.name,"Dealer",sizeof ( D.m_D_pub.name ) );
+   }
+   else
+   {
+      strncpy ( D.m_D_pub.name,argv[1],sizeof ( D.m_D_pub.name ) );
+   }
 
    // game unique ID
    boost::uuids::uuid game_uuid = boost::uuids::random_generator()();
@@ -31,7 +38,7 @@ int main ( int argc, char* argv[] )
    std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
 
-   std::cout << "The dealers name is \"Bud\"." << std::endl;
+   std::cout << "The dealers name is " << D.m_D_pub.name << "." << std::endl;
    std::cout <<  "With a UUID of " << uuid << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
 

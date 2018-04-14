@@ -27,10 +27,11 @@ void dealer::SetDeck(int option){
 /*** Function to check if player already exists in a Game ***/
 bool dealer::playerExists(char * uid){
   bool found = false;
-  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+  for (unsigned int i=0;i<UberCasino::MAX_PLAYERS_IN_A_GAME;i++)
   {
     if(strcmp(m_G_pub.p[ i ].uid, uid) == 0){
       found = true;
+      std::cout << "Player already exists!" << std::endl;
     }
   }
   return found;
@@ -227,11 +228,15 @@ void dealer::manage_state ()
             next_state = Done;
             transition = true;
          }
+         if( m_user_event ) //Dealer can start another game
+         {
+            next_state = Init; // wait for new players
+            transition = true;
+         }
          break;
       case Done:
          {
            std::cout << "THE GAME IS OVER" << std::endl;
-           exit(0);
          }
    }
 
@@ -312,6 +317,8 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "Init: Entry" << std::endl;
 #endif
+            // should override previous players
+            new_game();
           }
           break;
        case Waiting:
@@ -432,9 +439,21 @@ void dealer::manage_state ()
             }
             m_G_pub.gstate = end_hand;
             g_io->publish ( m_G_pub );
-            // if you wanted to, the dealer could decide who wins
-            // or loses here.
-            std::cout << "The players now decide if they win or lose" << std::endl;
+            
+            int dealer_points = card_value ( m_G_pub.dealer_cards );
+            int player_points = card_value ( m_G_pub.p[m_G_pub.active_player].cards );
+            std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
+            if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
+            {
+               std::cout << "Player Wins" << std::endl;
+            }
+            else
+            {
+               std::cout << "Dealer Wins" << std::endl;
+            }
+            TIMER(30);
+            std::cout << "Enter start to start a new game" << std::endl;
+            std::cout << "Enter q to quit game" << std::endl;
           }
           break;
        case Done:
@@ -442,6 +461,7 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "Done: Entry" << std::endl;
 #endif
+            end_game ();
           }
           break;
       }
@@ -458,6 +478,25 @@ void dealer::manage_state ()
 
 void dealer::new_game ()
 {
+  m_number_of_players = 0;
+
+  // reset playerState p[] uid and card deck
+  for (unsigned int i=0;i<UberCasino::MAX_PLAYERS_IN_A_GAME;i++)
+  {
+      memcpy ( m_G_pub.p[ i ].uid, 
+      "", 
+      sizeof ( m_G_pub.p[ i ].uid ) );  
+
+      for (unsigned int j=0;j<UberCasino::MAX_CARDS_PER_PLAYER;j++)
+      {
+        m_G_pub.p[i].cards[ i ].valid  = false;
+      }
+  }
+
+  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+  {
+      m_G_pub.dealer_cards[i].valid = false;
+  }
 }
 
 void dealer::next_player ()
@@ -467,6 +506,7 @@ void dealer::next_player ()
 
 void dealer::end_game ()
 {
+  exit(0);
 }
 
 void dealer::deal_to_dealer ()

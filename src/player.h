@@ -57,6 +57,7 @@ class player
       //    2. external data recieved
       //    3. user input
       void timer_expired ();
+      bool dealerExists(Dealer d);
       void external_data (Player P);
       void external_data (Dealer D);
       void external_data (Game G);

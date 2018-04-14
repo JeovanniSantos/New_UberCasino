@@ -17,6 +17,18 @@
 
 //std::mutex p;
 
+/*** Function to check if Dealer already exists in List ***/
+bool player::dealerExists(Dealer d){
+  bool found = false;
+  for (unsigned int i=0;i<m_dealer_list.size ();i++)
+  {
+    if(strcmp(m_dealer_list[i].name, d.name) == 0){
+      found = true;
+    }
+  }
+  return found;
+}
+
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
    // given an array of cards, returns the point value
@@ -149,6 +161,10 @@ void player::manage_state ()
                   transition = true;
                   next_state = StartHand;
                }
+               else
+               {
+                 cout << "Please enter a valid number... " << endl; // if the player enters a number that is not on the list
+               }
             }
          }
          break;
@@ -183,6 +199,21 @@ void player::manage_state ()
          break;
      case EndHand:
          {
+           // player still has money to play, so should look for another game
+           // if timer runs out game ends
+
+           //clear list of dealers
+           m_dealer_list.clear();
+
+           if ( m_user_event )
+           {
+             transition = true;
+             next_state = Init;
+           }
+           if( m_timer_event ) 
+           {
+             exit(0);
+           }
          }
          break;
    }
@@ -195,7 +226,7 @@ void player::manage_state ()
 #endif
    }
    // if there is a transition, then we have to run the exit 
-   // and entrance processing
+   // and entrance processing, 
    if (transition)
    {
       // on exit
@@ -244,7 +275,11 @@ void player::manage_state ()
 #endif
             if (m_Dealer_recv)
             {
-               m_dealer_list.push_back ( m_D );
+              //needs to check if the dealer is already inside the list.
+              if(!dealerExists(m_D))
+              { 
+                m_dealer_list.push_back ( m_D );
+              }
             }
             // print the list to stdout
             if (m_dealer_list.size () > 0 )
@@ -263,6 +298,7 @@ void player::manage_state ()
 #ifdef DEBUG_STATES
                std::cout << "Waiting: StartHand" << std::endl;
 #endif
+	       //
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
@@ -321,7 +357,10 @@ void player::manage_state ()
 
               if (m_balance > 10.0 )
               {
-                 TIMER(2);
+                //If player still has money left, he should look for another game 
+                TIMER(30); 
+                std::cout << "Enter start to begin new game" << std::endl; 
+                std::cout << "Enter q to quit game" << std::endl;
               }
               else
               {

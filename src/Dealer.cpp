@@ -7,6 +7,7 @@
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
 #include "dealer.h"
+#include "start_window.h"
 
 static dealer* PTR;
 
@@ -16,12 +17,19 @@ int main ( int argc, char* argv[] )
 {
    // create the dealer object
    dealer D = dealer ();
-   D.SetDeck(2);
    PTR = &D;
    // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    memcpy ( D.m_D_pub.uid, &uuid, sizeof ( D.m_D_pub.uid ) );
+   // game unique ID
+   boost::uuids::uuid game_uuid = boost::uuids::random_generator()();
+   memcpy ( D.m_D_pub.game_uid, &game_uuid, sizeof ( D.m_D_pub.game_uid ) );
 
+   const std::string tmp = boost::uuids::to_string(uuid);
+   const char* value = tmp.c_str();
+   StartWindow win(500,600,"StartWindow",value);
+   return Fl::run();
+/*
    if ( argc == 1 ) // meaning there are none
    {
       strncpy ( D.m_D_pub.name,"Dealer",sizeof ( D.m_D_pub.name ) );
@@ -30,10 +38,8 @@ int main ( int argc, char* argv[] )
    {
       strncpy ( D.m_D_pub.name,argv[1],sizeof ( D.m_D_pub.name ) );
    }
-
-   // game unique ID
-   boost::uuids::uuid game_uuid = boost::uuids::random_generator()();
-   memcpy ( D.m_D_pub.game_uid, &game_uuid, sizeof ( D.m_D_pub.game_uid ) );
+*/
+/*
 
    std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
@@ -52,7 +58,7 @@ int main ( int argc, char* argv[] )
      if (line[0] == 'q' ) break;
      D.user_input ( std::string (line) );
    }
-
+*/
 
    return 0;
 }

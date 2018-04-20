@@ -49,16 +49,6 @@ class StartWindow : public Fl_Window{
 
 };
 
-//----------------------------------------------------
-/*
-int main (){
- 
-   StartWindow win(300,400,"StartWindow","123123123123");
-   return Fl::run();
-}
-*/
-//----------------------------------------------------
-
 StartWindow::StartWindow(int w, int h, const char* title, const char* uuid_in):Fl_Window(w,h,title){
    
    begin();
@@ -109,56 +99,5 @@ StartWindow::StartWindow(int w, int h, const char* title, const char* uuid_in):F
 //----------------------------------------------------
 
 StartWindow::~StartWindow(){}
-
-//----------------------------------------------------
-
-const char* StartWindow::get_dealer_name(){
-    return dealer_name;
-}
-
-//----------------------------------------------------
-void StartWindow::cb_start(Fl_Widget* o, void* v) {
- 
-    ( (StartWindow*)v )->cb_start_i();
-}
-
-void StartWindow::cb_start_i() {
-    dealer_name = name->value();
-    cout << endl << dealer_name << endl; // test
-    hide();
-}
-
-//----------------------------------------------------
-
-void StartWindow::cb_radio(Fl_Widget* o, void* v) {
- 
-    ( (StartWindow*)v )->cb_radio_i(o,v);
-}
-
-void StartWindow::cb_radio_i(Fl_Widget *b, void *d) {
-    
-
-    Fl_Round_Button* rb = ((Fl_Round_Button*)b);
-    if(rb->value() == 1)
-    {
-      int h = *(int *)(&d);
-      //Set the deck to whatever was chosen 
-      //(*d).SetDeck(h);
-      cout << endl << h << endl;
-    }
-}
-
-//----------------------------------------------------
-
-void StartWindow::cb_quit(Fl_Widget* , void* v) {
-
-   ( (StartWindow*)v )->cb_quit_i();
-}
-
-
-void StartWindow::cb_quit_i() {
-
-    hide();
-}
 #endif
 

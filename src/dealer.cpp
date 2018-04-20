@@ -173,7 +173,7 @@ void dealer::manage_state ()
    switch (m_dealer_state)
    {
       case Init:
-         if ( m_user_event ) 
+         if ( m_user_event ) //FLTK Event Handling goes here
          {
             next_state = Waiting;
             transition = true;
@@ -197,7 +197,7 @@ void dealer::manage_state ()
             next_state = StartHand;
             transition = true;
          }
-         if ( m_user_event ) //Dealer can manually start the game 
+         if ( m_user_event ) //FLTK Event Handling goes here
          {
             next_state = StartHand;
             transition = true;
@@ -229,7 +229,7 @@ void dealer::manage_state ()
             transition = true;
          }
          if( m_user_event ) //Dealer can start another game
-         {
+         {                   //FLTK Event Handling goes here  
             next_state = Init; // wait for new players
             transition = true;
          }
@@ -266,7 +266,7 @@ void dealer::manage_state ()
              std::cout << "Waiting: Exit" << std::endl;
 #endif
              // start a 30 second timer to wait for players
-             TIMER(30);
+             TIMER(10);
           }
           break;
        case WaitingForOthers:
@@ -380,9 +380,11 @@ void dealer::manage_state ()
              for (unsigned int i=0;i<m_number_of_players;i++)
              {
                m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
+               playerValues[i] = card_value ( m_G_pub.p[ i ].cards);
              }
              // and the second card to the first player
              m_G_pub.p [ 0 ]. cards [1] = Next_Card ();
+             playerValues[0] = card_value ( m_G_pub.p[ 0 ].cards);
              // set to the player
              m_G_pub.active_player = 0;
              g_io->publish ( m_G_pub );
@@ -420,6 +422,7 @@ void dealer::manage_state ()
                 }
                 m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
                 g_io->publish ( m_G_pub );
+                playerValues[i] = card_value ( m_G_pub.p[ i ].cards);
              }
           }
           break;
@@ -485,7 +488,9 @@ void dealer::new_game ()
   {
       memcpy ( m_G_pub.p[ i ].uid, 
       "", 
-      sizeof ( m_G_pub.p[ i ].uid ) );  
+      sizeof ( m_G_pub.p[ i ].uid ) ); 
+      
+      playerValues[i] = 0;
 
       for (unsigned int j=0;j<UberCasino::MAX_CARDS_PER_PLAYER;j++)
       {
@@ -554,14 +559,22 @@ void dealer::external_data (Game G)
    unlock ();
 }
 
-void dealer::user_input (std::string I)
+void dealer::user_input ( std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
    lock ();
-   if (m_user_event_mask == I )
+   m_user_event_mask = I;
+   if (m_user_event_mask == "start" )
    {
       m_user_event = true;
+      m_dealer_state = Init;
+      manage_state ();
+   }
+   else if (m_user_event_mask == "quit" )
+   {
+      m_user_event = true;
+      m_dealer_state = Done;
       manage_state ();
    }
    unlock ();
@@ -572,7 +585,7 @@ dealer::dealer ()
    // member variables
    m_timer_thread = NULL;
    m_dealer_state = Init;
-   m_user_event_mask = "start";  // this is the first event we will be looking for
+   m_user_event_mask = "";  // this is the event that Dealer will be looking for
    m_number_of_players = 0;
    m_G_pub.active_player = 0;
    // member objects

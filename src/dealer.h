@@ -69,6 +69,7 @@ class dealer
       }
       UberCasino::card_t dealCard();
       void user_input ( std::string );
+      unsigned int playerValues[MAX_PLAYERS_IN_A_GAME];
       dealer ();
       ~dealer ();
 };

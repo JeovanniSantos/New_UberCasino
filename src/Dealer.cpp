@@ -8,6 +8,7 @@
 
 #include "dealer.h"
 #include "start_window.h"
+#include "mainwindow.h"
 
 #define DEBUG
 
@@ -32,11 +33,14 @@ void StartWindow::cb_start_i() {
     
     //start Next Window && Game
     (*PTR).user_input ("start");
+    MainWindow* win = new MainWindow(1020,700,"UberCasino");
+    //MainWindow win(1020,700,"UberCasino");
    
 #ifdef DEBUG    
     cout << endl << dealer_name << endl; // test
 #endif
-    //hide();
+    win->show();
+    hide();
 }
 
 //----------------------------------------------------
@@ -73,6 +77,34 @@ void StartWindow::cb_quit_i() {
     (*PTR).user_input ("quit");
     hide();
 }
+
+//----------------------------------------------------
+void MainWindow::cb_start(Fl_Widget* o, void* v) {
+ 
+    ( (MainWindow*)v )->cb_start_i();
+}
+
+void MainWindow::cb_start_i() {
+    //dealer_name = name->value();
+    //cout << endl << dealer_name << endl; // test
+    (*PTR).user_input ("startGame");
+    //hide();
+}
+
+
+//----------------------------------------------------
+
+void MainWindow::cb_quit(Fl_Widget* , void* v) {
+
+   ( (MainWindow*)v )->cb_quit_i();
+}
+
+
+void MainWindow::cb_quit_i() {
+
+    hide();
+}
+
 
 int main ( int argc, char* argv[] )
 {

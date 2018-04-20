@@ -577,6 +577,12 @@ void dealer::user_input ( std::string I)
       m_dealer_state = Done;
       manage_state ();
    }
+   else if (m_user_event_mask == "startGame" )
+   {
+      m_user_event = true;
+      m_dealer_state = StartHand;
+      manage_state ();
+   }
    unlock ();
 }
 

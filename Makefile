@@ -5,7 +5,7 @@ LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread
 
 CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys
 CXXFLAGS = -std=c++11
-LDFLAGS  = $(shell fltk-config --use-gl --use-images --ldflags)
+LDFLAGS  = $(shell fltk-config --use-gl --use-images --ldflags --compile)
 INCLUDE =  -I/usr/local/include/ -I/usr/local/lib/
 
 all: PitBoss Dealer Player
@@ -34,7 +34,7 @@ COMMON_CPP= src/CheckStatus.cpp src/DDSEntityManager.cpp
 COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.h 
 
 DEALER_FILES = src/dealer.cpp src/deck.cpp
-DEALER_H_FILES = src/dealer.h src/deck.h src/start_window.h
+DEALER_H_FILES = src/dealer.h src/deck.h src/start_window.h src/mainwindow.h
 
 PLAYER_FILES = src/player.cpp
 PLAYER_H_FILES = src/player.h

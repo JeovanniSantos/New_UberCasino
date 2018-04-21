@@ -7,8 +7,6 @@
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
 #include "dealer.h"
-#include "start_window.h"
-#include "mainwindow.h"
 
 #define DEBUG
 
@@ -24,23 +22,22 @@ const char* StartWindow::get_dealer_name(){
 //----------------------------------------------------
 void StartWindow::cb_start(Fl_Widget* o, void* v) {
  
-    ( (StartWindow*)v )->cb_start_i();
+    ( (StartWindow*)v )->cb_start_i(o,v);
 }
 
-void StartWindow::cb_start_i() {
+void StartWindow::cb_start_i(Fl_Widget* b, void* d) {
     dealer_name = name->value();
     strncpy ( (*PTR).m_D_pub.name,dealer_name,sizeof ( (*PTR).m_D_pub.name ) );
     
     //start Next Window && Game
     (*PTR).user_input ("start");
-    MainWindow* win = new MainWindow(1020,700,"UberCasino");
-    //MainWindow win(1020,700,"UberCasino");
+    (*PTR).setMainWindow();
    
 #ifdef DEBUG    
     cout << endl << dealer_name << endl; // test
 #endif
-    win->show();
-    hide();
+    b->parent()->hide();
+    b->parent()->redraw();
 }
 
 //----------------------------------------------------
@@ -66,13 +63,13 @@ void StartWindow::cb_radio_i(Fl_Widget *b, void *d) {
 
 //----------------------------------------------------
 
-void StartWindow::cb_quit(Fl_Widget* , void* v) {
+void StartWindow::cb_quit(Fl_Widget* o, void* v) {
 
-   ( (StartWindow*)v )->cb_quit_i();
+   ( (StartWindow*)v )->cb_quit_i(o,v);
 }
 
 
-void StartWindow::cb_quit_i() {
+void StartWindow::cb_quit_i(Fl_Widget* b, void* d) {
 
     (*PTR).user_input ("quit");
     hide();
@@ -81,10 +78,10 @@ void StartWindow::cb_quit_i() {
 //----------------------------------------------------
 void MainWindow::cb_start(Fl_Widget* o, void* v) {
  
-    ( (MainWindow*)v )->cb_start_i();
+    ( (MainWindow*)v )->cb_start_i(o,v);
 }
 
-void MainWindow::cb_start_i() {
+void MainWindow::cb_start_i(Fl_Widget* b, void* d) {
     //dealer_name = name->value();
     //cout << endl << dealer_name << endl; // test
     (*PTR).user_input ("startGame");
@@ -94,14 +91,15 @@ void MainWindow::cb_start_i() {
 
 //----------------------------------------------------
 
-void MainWindow::cb_quit(Fl_Widget* , void* v) {
+void MainWindow::cb_quit(Fl_Widget* o, void* v) {
 
-   ( (MainWindow*)v )->cb_quit_i();
+   ( (MainWindow*)v )->cb_quit_i(o,v);
 }
 
 
-void MainWindow::cb_quit_i() {
+void MainWindow::cb_quit_i(Fl_Widget* b, void* d) {
 
+    (*PTR).user_input ("quit");
     hide();
 }
 
@@ -121,31 +119,9 @@ int main ( int argc, char* argv[] )
    const std::string tmp = boost::uuids::to_string(uuid);
    const char* value = tmp.c_str();
 
-   StartWindow win(500,600,"StartWindow",value);
+   (*PTR).setStartWindow(value);
    return Fl::run();
 
-   
-/*
-
-   std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
-   std::cout << "-------------------------------------------" << std::endl;
-
-   std::cout << "The dealers name is " << D.m_D_pub.name << "." << std::endl;
-   std::cout <<  "With a UUID of " << uuid << std::endl;
-   std::cout << "-------------------------------------------" << std::endl;
-
-   std::cout << "Enter 'start' to begin the game" << std::endl;
-   std::cout << "Enter 'q' to exit" << std::endl;
-   std::cout << "-------------------------------------------" << std::endl;
-
-   char line[100]; // how large to make it? who knows.
-   while (std::cin.getline(line, sizeof(line)))
-   {
-     if (line[0] == 'q' ) break;
-     D.user_input ( std::string (line) );
-   }
-*/
-
-   return 0;
+   //return 0;
 }
 

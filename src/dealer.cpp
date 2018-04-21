@@ -19,9 +19,148 @@
 
 //std::mutex m;
 
-/*** Function to Setup Deck ***/ //need to update
+StartWindow::StartWindow(int w, int h, const char* title, const char* uuid_in):Fl_Window(w,h,title){
+   
+   begin();
+   
+      welcome = new Fl_Box(80, 10, 100, 50, "Welcome to UberCasino!");
+      welcome->labelsize(18);
+  
+      name = new Fl_Input(80, 80, 350, 30, "Name:");
+      uuid = new Fl_Output(80, 130, 350, 30, "Uuid:");
+      uuid->value(uuid_in); 
+
+      Fl_Group* rb_group = new Fl_Group(15, 10, 300, 300);
+      //rb_group->box(FL_UP_FRAME);   
+      { test_deck = new Fl_Round_Button(80, 180, 70, 30, "Test");
+        test_deck->type(102);
+        test_deck->down_box(FL_ROUND_DOWN_BOX);
+        test_deck->callback(cb_radio,(void*)1);
+      } 
+      { eight_deck = new Fl_Round_Button(80, 220, 70, 30, "8 Deck");
+        eight_deck->type(102);
+        eight_deck->down_box(FL_ROUND_DOWN_BOX);
+        eight_deck->callback(cb_radio,(void*)2);
+      } 
+      { infinite_deck = new Fl_Round_Button(80, 260, 70, 30, "Infinite");
+        infinite_deck->type(102);
+        infinite_deck->down_box(FL_ROUND_DOWN_BOX);
+        infinite_deck->callback(cb_radio,(void*)3);
+      } 
+      rb_group->end();
+
+      start = new Fl_Button( 50, 350, 70, 30, "Start");
+      start->callback( cb_start, this );
+    
+      quit = new Fl_Button(140, 350, 70, 30, "Quit");
+      quit->callback(cb_quit, this);
+
+
+   end();
+   resizable(this);
+   show();
+}
+
+//----------------------------------------------------
+
+StartWindow::~StartWindow(){}
+
+MainWindow::MainWindow(int w, int h, const char* title):Fl_Window(w,h,title){
+   
+   begin();
+   
+      box=new Fl_Box(0, 0, 1020,700);   
+      png = new Fl_PNG_Image("background.png");      
+      box->image(png);  
+      box->box(FL_BORDER_BOX); 
+
+      dealer_deck = new Fl_Box(440, 100, 137,120,"Dealer's deck");
+      dealer_deck->box(FL_BORDER_BOX);
+      dealer_deck->labelsize(18);
+
+      dealer_value = new Fl_Box(600, 100, 100,50,"Dealer's vaue");	
+      dealer_value->box(FL_BORDER_BOX);
+      player1= new Fl_Box(20, 50, 100,180,"player1's deck"); 
+      player1->box(FL_BORDER_BOX);
+      player1_value = new Fl_Box(20, 250, 100,50,"total value");
+      player1_value->box(FL_BORDER_BOX);
+      player2= new Fl_Box(167, 150, 100,180,"player2's deck"); 
+      player2->box(FL_BORDER_BOX);
+      player2_value = new Fl_Box(167, 350, 100,50,"total value");
+      player2_value->box(FL_BORDER_BOX);
+      player3= new Fl_Box(314, 216, 100,180,"player3's deck"); 
+      player3->box(FL_BORDER_BOX);
+      player3_value = new Fl_Box(314, 416, 100,50,"total value"); 
+      player3_value->box(FL_BORDER_BOX);
+      player4= new Fl_Box(461, 280, 100,180,"player4's deck"); 
+      player4->box(FL_BORDER_BOX);
+      player4_value = new Fl_Box(461, 480, 100,50,"total value"); 
+      player4_value->box(FL_BORDER_BOX);
+      player5= new Fl_Box(608, 216, 100,180,"player5's deck"); 
+      player5->box(FL_BORDER_BOX);
+      player5_value = new Fl_Box(608, 416, 100,50,"total value"); 
+      player5_value->box(FL_BORDER_BOX);
+      player6= new Fl_Box(755, 150, 100,180,"player6's deck"); 
+      player6->box(FL_BORDER_BOX);
+      player6_value = new Fl_Box(755, 350, 100,50,"total value"); 
+      player6_value->box(FL_BORDER_BOX);
+      player7= new Fl_Box(900, 50, 100,180,"player7's deck"); 
+      player7->box(FL_BORDER_BOX);
+      player7_value = new Fl_Box(900, 250, 100,50,"total value"); 
+      player7_value->box(FL_BORDER_BOX);
+      game_info= new Fl_Box(20, 550, 350,120,"Game info"); 
+      game_info->box(FL_BORDER_BOX);
+      
+      //hide player slots until player is active
+      player1->hide();
+      player1_value->hide();
+      player2->hide();
+      player2_value->hide();
+      player3->hide();
+      player3_value->hide();
+      player4->hide();
+      player4_value->hide();
+      player5->hide();
+      player5_value->hide();
+      player6->hide();
+      player6_value->hide();
+      player7->hide();
+      player7_value->hide();
+
+      table_count= new Fl_Box(150, 50, 100, 50, "Table Count");
+      table_count->box(FL_BORDER_BOX);	
+
+      start = new Fl_Button(900, 550, 80, 50, "&Start");
+      start->callback( cb_start, this );
+    
+      quit = new Fl_Button(900, 630, 80, 50, "&Quit");
+      quit->callback(cb_quit, this);
+
+
+   end();
+   resizable(this);
+   //show();
+}
+
+//----------------------------------------------------
+
+MainWindow::~MainWindow(){}
+
+/*** Function to Setup Deck ***/
 void dealer::SetDeck(int option){
   deck.SetDeckType(option);
+}
+
+/*** Function to Setup Main Window ***/
+void dealer::setMainWindow(){
+  mw = new MainWindow(1020,700,"UberCasino");
+  mw->show();
+}
+
+/*** Function to Setup Start Window ***/
+void dealer::setStartWindow(const char* value){
+  sw = new StartWindow(500,600,"StartWindow",value);
+  sw->show();
 }
 
 /*** Function to check if player already exists in a Game ***/
@@ -173,7 +312,7 @@ void dealer::manage_state ()
    switch (m_dealer_state)
    {
       case Init:
-         if ( m_user_event ) //FLTK Event Handling goes here
+         if( m_user_event && (m_user_event_mask == "start" || m_user_event_mask == "startGame")) //FLTK Event Handling goes here
          {
             next_state = Waiting;
             transition = true;
@@ -192,12 +331,14 @@ void dealer::manage_state ()
             next_state = WaitingForOthers;
             transition = true;
          }
+/*
          if ( m_timer_event )
          {
             next_state = StartHand;
             transition = true;
          }
-         if ( m_user_event ) //FLTK Event Handling goes here
+*/
+         if( m_user_event && m_user_event_mask == "startGame") //FLTK Event Handling goes here
          {
             next_state = StartHand;
             transition = true;
@@ -223,14 +364,21 @@ void dealer::manage_state ()
          }
          break;
       case EndHand:
+/*
          if ( m_timer_event )
          {
             next_state = Done;
             transition = true;
          }
-         if( m_user_event ) //Dealer can start another game
-         {                   //FLTK Event Handling goes here  
+*/
+         if( m_user_event && m_user_event_mask == "startGame") //Dealer can start another game
+         {                                                 //FLTK Event Handling goes here  
             next_state = Init; // wait for new players
+            transition = true;
+         }
+         else if( m_user_event && m_user_event_mask == "quit") //Dealer can start another game
+         {                                                     //FLTK Event Handling goes here  
+            next_state = Done; // wait for new players
             transition = true;
          }
          break;
@@ -266,7 +414,7 @@ void dealer::manage_state ()
              std::cout << "Waiting: Exit" << std::endl;
 #endif
              // start a 30 second timer to wait for players
-             TIMER(10);
+             //TIMER(10);
           }
           break;
        case WaitingForOthers:
@@ -335,6 +483,7 @@ void dealer::manage_state ()
 #endif
              // if there is room and the player does not already exist, need to accept the 
              // new player.
+             // need to update window as well with player cards and count values
              if (  ( m_Player_recv ) && 
                    ( m_P_sub.A == idle ) && 
                    ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME ) &&
@@ -362,6 +511,40 @@ void dealer::manage_state ()
                  }
                  m_number_of_players++;
                  std::cout << "There are " << m_number_of_players << " in the game." << std::endl;
+
+                 //Update labels on Window Here
+                 //Add a slot for each player : activate/show slot
+                 switch(m_number_of_players){
+                   case 1:
+                     mw->player1->show();
+                     mw->player1_value->show();
+                     break;
+                   case 2:
+                     mw->player2->show();
+                     mw->player2_value->show();
+                     break;
+                   case 3:
+                     mw->player3->show();
+                     mw->player3_value->show();
+                     break;
+                   case 4:
+                     mw->player4->show();
+                     mw->player4_value->show();
+                     break;
+                   case 5:
+                     mw->player5->show();
+                     mw->player5_value->show();
+                     break;
+                   case 6:
+                     mw->player6->show();
+                     mw->player6_value->show();
+                     break;
+                   case 7:
+                     mw->player7->show();
+                     mw->player7_value->show();
+                     break;
+                 }
+
                  g_io->publish ( m_G_pub );
              }
           }
@@ -374,17 +557,51 @@ void dealer::manage_state ()
              // start a 1 second timer
              TIMER(1);
              m_G_pub.gstate = playing;
-             //  one for the dealer
+             //  one for the dealer : display card on GUI
              m_G_pub.dealer_cards[0] = Next_Card ();
+             std::string s = std::to_string(card_value(m_G_pub.dealer_cards));
+             const char *dValue = s.c_str();
+
+             mw->dealer_value->label(dValue);
+             
              //  one for each player
              for (unsigned int i=0;i<m_number_of_players;i++)
              {
                m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
                playerValues[i] = card_value ( m_G_pub.p[ i ].cards);
+               std::string p = std::to_string(playerValues[i]);
+               const char *pValue = p.c_str();
+               switch(i){
+                   case 1:
+                     mw->player1_value->label(pValue);
+                     break;
+                   case 2:
+                     mw->player2_value->label(pValue);
+                     break;
+                   case 3:
+                     mw->player3_value->label(pValue);
+                     break;
+                   case 4:
+                     mw->player4_value->label(pValue);
+                     break;
+                   case 5:
+                     mw->player5_value->label(pValue);
+                     break;
+                   case 6:
+                     mw->player6_value->label(pValue);
+                     break;
+                   case 7:
+                     mw->player7_value->label(pValue);
+                     break;
+                 }
              }
              // and the second card to the first player
              m_G_pub.p [ 0 ]. cards [1] = Next_Card ();
              playerValues[0] = card_value ( m_G_pub.p[ 0 ].cards);
+             std::string p = std::to_string(playerValues[0]);
+             const char *pValue = p.c_str();
+             mw->player1_value->label(pValue);
+
              // set to the player
              m_G_pub.active_player = 0;
              g_io->publish ( m_G_pub );
@@ -422,7 +639,33 @@ void dealer::manage_state ()
                 }
                 m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
                 g_io->publish ( m_G_pub );
-                playerValues[i] = card_value ( m_G_pub.p[ i ].cards);
+                playerValues[m_G_pub.active_player] = card_value ( m_G_pub.p[ m_G_pub.active_player ].cards);
+                std::string p = std::to_string(playerValues[m_G_pub.active_player]);
+                const char *pValue = p.c_str();
+                switch(m_G_pub.active_player){
+                   case 1:
+                     mw->player1_value->label(pValue);
+                     break;
+                   case 2:
+                     mw->player2_value->label(pValue);
+                     break;
+                   case 3:
+                     mw->player3_value->label(pValue);
+                     break;
+                   case 4:
+                     mw->player4_value->label(pValue);
+                     break;
+                   case 5:
+                     mw->player5_value->label(pValue);
+                     break;
+                   case 6:
+                     mw->player6_value->label(pValue);
+                     break;
+                   case 7:
+                     mw->player7_value->label(pValue);
+                     break;
+                 }
+                mw->player1_value->label(pValue);
              }
           }
           break;
@@ -438,12 +681,19 @@ void dealer::manage_state ()
             while ( card_value ( m_G_pub.dealer_cards ) < 17 ) //changed Hand_Value to card_value
             {
                m_G_pub.dealer_cards[i] = Next_Card ();
+               std::string s = std::to_string(card_value( m_G_pub.dealer_cards ));
+               const char *dValue = s.c_str();
+               mw->dealer_value->label(dValue);
                i++;
             }
             m_G_pub.gstate = end_hand;
             g_io->publish ( m_G_pub );
             
             int dealer_points = card_value ( m_G_pub.dealer_cards );
+            std::string s = std::to_string(dealer_points);
+            const char *dValue = s.c_str();
+            mw->dealer_value->label(dValue);
+
             int player_points = card_value ( m_G_pub.p[m_G_pub.active_player].cards );
             std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
             if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
@@ -454,9 +704,9 @@ void dealer::manage_state ()
             {
                std::cout << "Dealer Wins" << std::endl;
             }
-            TIMER(30);
-            std::cout << "Enter start to start a new game" << std::endl;
-            std::cout << "Enter q to quit game" << std::endl;
+            //TIMER(30);
+            //std::cout << "Enter start to start a new game" << std::endl;
+            //std::cout << "Enter q to quit game" << std::endl;
           }
           break;
        case Done:
@@ -565,22 +815,19 @@ void dealer::user_input ( std::string I)
    // from the console.  any / all input is accepted
    lock ();
    m_user_event_mask = I;
-   if (m_user_event_mask == "start" )
+   if (m_user_event_mask == "start")
    {
       m_user_event = true;
-      m_dealer_state = Init;
       manage_state ();
    }
-   else if (m_user_event_mask == "quit" )
+   else if (m_user_event_mask == "quit")
    {
       m_user_event = true;
-      m_dealer_state = Done;
       manage_state ();
    }
-   else if (m_user_event_mask == "startGame" )
+   else if (m_user_event_mask == "startGame")
    {
       m_user_event = true;
-      m_dealer_state = StartHand;
       manage_state ();
    }
    unlock ();

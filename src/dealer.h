@@ -8,13 +8,16 @@
 
 #include "io.h"
 #include "deck.h"
-
+#include "mainwindow.h"
+#include "start_window.h"
 
 
 class dealer
 {
    private:
       Deck deck;
+      StartWindow* sw;
+      MainWindow*  mw;
       void new_game ();
       void next_player ();
       void deal_to_dealer ();
@@ -68,6 +71,8 @@ class dealer
         return deck;
       }
       UberCasino::card_t dealCard();
+      void setMainWindow();
+      void setStartWindow(const char* value);
       void user_input ( std::string );
       unsigned int playerValues[MAX_PLAYERS_IN_A_GAME];
       dealer ();

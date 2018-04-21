@@ -70,7 +70,7 @@ MainWindow::MainWindow(int w, int h, const char* title):Fl_Window(w,h,title){
    begin();
    
       box=new Fl_Box(0, 0, 1020,700);   
-      png = new Fl_PNG_Image("background.png");      
+      png = new Fl_PNG_Image("src/background.png");      
       box->image(png);  
       box->box(FL_BORDER_BOX); 
 

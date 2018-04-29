@@ -57,6 +57,120 @@ int kind_to_string ( UberCasino::card_kind t )
    return retval;
 }
 
+void MainWindow::resetGame(){
+      //dealer
+      dealer_value->label("dealer");
+      dealer_value->hide();
+      card1->hide();
+      card2->hide();
+      card3->hide();
+      card4->hide();
+      card5->hide();
+      card6->hide();
+      card7->hide();
+      card8->hide();
+      card9->hide();
+      card10->hide();
+
+      //player 1
+      player1_value->label("player1");
+      player1_value->hide();
+      card1_1->hide();
+      card1_2->hide();
+      card1_3->hide();
+      card1_4->hide();
+      card1_5->hide();
+      card1_6->hide();
+      card1_7->hide();
+      card1_8->hide();
+      card1_9->hide();
+      card1_10->hide();
+
+      //player 2
+      player2_value->label("player2");
+      player2_value->hide();
+      card2_1->hide();
+      card2_2->hide();
+      card2_3->hide();
+      card2_4->hide();
+      card2_5->hide();
+      card2_6->hide();
+      card2_7->hide();
+      card2_8->hide();
+      card2_9->hide();
+      card2_10->hide();
+
+      //player 3
+      player3_value->label("player3");
+      player3_value->hide();
+      card3_1->hide();
+      card3_2->hide();
+      card3_3->hide();
+      card3_4->hide();
+      card3_5->hide();
+      card3_6->hide();
+      card3_7->hide();
+      card3_8->hide();
+      card3_9->hide();
+      card3_10->hide();
+
+      //player 4
+      player4_value->label("player4");
+      player4_value->hide();
+      card4_1->hide();
+      card4_2->hide();
+      card4_3->hide();
+      card4_4->hide();
+      card4_5->hide();
+      card4_6->hide();
+      card4_7->hide();
+      card4_8->hide();
+      card4_9->hide();
+      card4_10->hide();
+
+      //player 5
+      player5_value->label("player5");
+      player5_value->hide();
+      card5_1->hide();
+      card5_2->hide();
+      card5_3->hide();
+      card5_4->hide();
+      card5_5->hide();
+      card5_6->hide();
+      card5_7->hide();
+      card5_8->hide();
+      card5_9->hide();
+      card5_10->hide();
+
+      //player 6
+      player6_value->label("player6");
+      player6_value->hide();
+      card6_1->hide();
+      card6_2->hide();
+      card6_3->hide();
+      card6_4->hide();
+      card6_5->hide();
+      card6_6->hide();
+      card6_7->hide();
+      card6_8->hide();
+      card6_9->hide();
+      card6_10->hide();
+
+      //player 7
+      player7_value->label("player7");
+      player7_value->hide();
+      card7_1->hide();
+      card7_2->hide();
+      card7_3->hide();
+      card7_4->hide();
+      card7_5->hide();
+      card7_6->hide();
+      card7_7->hide();
+      card7_8->hide();
+      card7_9->hide();
+      card7_10->hide();
+}
+
 void MainWindow::card_to_string(Fl_Box** box, UberCasino::card_t c){
   int suite = suite_to_string (c.suite);
   int type = kind_to_string (c.card);
@@ -919,7 +1033,7 @@ void dealer::manage_state ()
    switch (m_dealer_state)
    {
       case Init:
-         if( m_user_event && (m_user_event_mask == "start" || m_user_event_mask == "startGame")) //FLTK Event Handling goes here
+         if( m_user_event && (m_user_event_mask == "start")) //FLTK Event Handling goes here
          {
             next_state = Waiting;
             transition = true;
@@ -964,17 +1078,11 @@ void dealer::manage_state ()
          }
          break;
       case EndHand:
-/*
-         if ( m_Player_recv )
-         {
-            next_state = Deal;
-            transition = true;
-         }
-*/
          if( m_user_event && m_user_event_mask == "startGame") //Dealer can start another game
          {                                                 //FLTK Event Handling goes here  
-            next_state = Init; // wait for new players
+            next_state = Waiting; // wait for new players
             transition = true;
+            new_game();
          }
          if( m_user_event && m_user_event_mask == "quit") //Dealer can start another game
          {                                                     //FLTK Event Handling goes here  
@@ -1065,8 +1173,6 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "Init: Entry" << std::endl;
 #endif
-            // should override previous players
-            new_game();
           }
           break;
        case Waiting:
@@ -1149,7 +1255,8 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
              std::cout << "StartHand: Entry" << std::endl;
 #endif
-             // start a 1 second timer
+             mw->start->deactivate();
+             // start a 3 second timer
              TIMER(3);
              m_G_pub.gstate = playing;
              //  one for the dealer : display card on GUI
@@ -1568,6 +1675,7 @@ void dealer::manage_state ()
                std::cout << "Dealer Wins" << std::endl;
 #endif
             }
+            mw->start->activate();
           }
           break;
        case Done:
@@ -1592,7 +1700,9 @@ void dealer::manage_state ()
 
 void dealer::new_game ()
 {
-  m_number_of_players = 0;
+   // member variables
+   m_number_of_players = 0;
+   m_G_pub.active_player = 0;
 
   // reset playerState p[] uid and card deck
   for (unsigned int i=0;i<UberCasino::MAX_PLAYERS_IN_A_GAME;i++)
@@ -1613,6 +1723,9 @@ void dealer::new_game ()
   {
       m_G_pub.dealer_cards[i].valid = false;
   }
+ 
+  mw->resetGame();
+  mw->numPlayers->value("0");
 }
 
 void dealer::next_player ()

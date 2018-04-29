@@ -12,7 +12,7 @@ void Deck::create_test_deck(){
 		new_card.card=(card_kind)1;
 		new_card.suite=(suite_t)1;
 		deck.push_back(new_card);
-		if(i == 13){
+		if(i == 12){
 			j++;
 			i = 0;
 		}
@@ -27,7 +27,7 @@ void Deck::create_eight_deck(){
 		new_card.card=(card_kind)i;
 		new_card.suite=(suite_t)j;
 		deck.push_back(new_card);
-		if(i == 13){
+		if(i == 12){
 			j++;
 			i = 0;
 		}
@@ -45,7 +45,7 @@ void Deck::create_infinite_deck(){
 		new_card.card=(card_kind)i;
 		new_card.suite=(suite_t)j;
 		deck.push_back(new_card);
-		if(i == 13){
+		if(i == 12){
 			j++;
 			i = 0;
 		}

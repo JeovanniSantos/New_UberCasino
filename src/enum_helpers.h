@@ -1,4 +1,5 @@
 #ifndef ENUM_HELPERS_H
+#define ENUM_HELPERS_H
 std::string to_string ( UberCasino::player_action_t t )
 {
    std::string retval;
@@ -60,5 +61,4 @@ std::string to_string ( UberCasino::card_kind t )
    }
    return retval;
 }
-#define ENUM_HELPERS_H
 #endif

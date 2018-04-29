@@ -11,6 +11,8 @@
 #define DEBUG
 
 static dealer* PTR;
+const char* value;
+bool deck_selected = false;
 
 #include "callback.h" // uses the PTR var
 //----------------------------------------------------
@@ -27,17 +29,32 @@ void StartWindow::cb_start(Fl_Widget* o, void* v) {
 
 void StartWindow::cb_start_i(Fl_Widget* b, void* d) {
     dealer_name = name->value();
-    strncpy ( (*PTR).m_D_pub.name,dealer_name,sizeof ( (*PTR).m_D_pub.name ) );
+    if (strcmp(dealer_name, "") == 0)
+    {
+      fl_alert ("Please enter a dealer name");
+      return;
+    }
+    if (!deck_selected)
+    {
+      fl_alert ("Please choose a deck type");
+      return;
+    }
+    else
+    {
+      strncpy ( (*PTR).m_D_pub.name,dealer_name,sizeof ( (*PTR).m_D_pub.name ) );
     
-    //start Next Window && Game
-    (*PTR).user_input ("start");
-    (*PTR).setMainWindow();
+      //start Next Window && Game
+      (*PTR).user_input ("start");
+      string deckType = (*PTR).GetDeck().get_deck_type();
+      const char* type = deckType.c_str();
+      (*PTR).setMainWindow(dealer_name, value, type);
    
 #ifdef DEBUG    
-    cout << endl << dealer_name << endl; // test
+      cout << endl << dealer_name << endl; // test
 #endif
-    b->parent()->hide();
-    b->parent()->redraw();
+      b->parent()->hide();
+      b->parent()->redraw();
+    }
 }
 
 //----------------------------------------------------
@@ -53,6 +70,7 @@ void StartWindow::cb_radio_i(Fl_Widget *b, void *d) {
     Fl_Round_Button* rb = ((Fl_Round_Button*)b);
     if(rb->value() == 1)
     {
+      deck_selected = true;
       int h = *(int *)(&d);
       (*PTR).SetDeck(h);
 #ifdef DEBUG
@@ -82,10 +100,13 @@ void MainWindow::cb_start(Fl_Widget* o, void* v) {
 }
 
 void MainWindow::cb_start_i(Fl_Widget* b, void* d) {
-    //dealer_name = name->value();
-    //cout << endl << dealer_name << endl; // test
+    if ( ((Fl_Button*)b)->value() == 1 ) {
+
+      b->deactivate();
+
+    }
+
     (*PTR).user_input ("startGame");
-    //hide();
 }
 
 
@@ -117,7 +138,7 @@ int main ( int argc, char* argv[] )
    memcpy ( D.m_D_pub.game_uid, &game_uuid, sizeof ( D.m_D_pub.game_uid ) );
 
    const std::string tmp = boost::uuids::to_string(uuid);
-   const char* value = tmp.c_str();
+   value = tmp.c_str();
 
    (*PTR).setStartWindow(value);
    return Fl::run();

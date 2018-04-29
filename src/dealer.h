@@ -4,7 +4,7 @@
 #include <string>
 
 #include <boost/thread.hpp>
-#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid.hpp>
 
 #include "io.h"
 #include "deck.h"
@@ -71,7 +71,7 @@ class dealer
         return deck;
       }
       UberCasino::card_t dealCard();
-      void setMainWindow();
+      void setMainWindow(const char* dealer_Name, const char* dealer_Uid, const char* deck_Type);
       void setStartWindow(const char* value);
       void user_input ( std::string );
       unsigned int playerValues[MAX_PLAYERS_IN_A_GAME];

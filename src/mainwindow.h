@@ -207,6 +207,8 @@ class MainWindow : public Fl_Window{
       void create_player6();
       void create_player7();
 
+      void deletePlayer(int player);
+
       void card_to_string(Fl_Box** box, UberCasino::card_t c);
       void resetGame();
 

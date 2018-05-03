@@ -21,6 +21,15 @@
     m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &dealer::timer_expired , this ) );\
 
 //std::mutex m;
+//= (char*) malloc ( 255 )={0};
+char dval[255] = {0};
+char p1[255] = {0};
+char p2[255] = {0};
+char p3[255] = {0};
+char p4[255] = {0};
+char p5[255] = {0};
+char p6[255] = {0};
+char p7[255] = {0};
 
 int suite_to_string ( UberCasino::suite_t t )
 {
@@ -1070,6 +1079,8 @@ void dealer::manage_state ()
          {
             next_state = EndHand;
             transition = true;
+	    //mw->deletePlayer(m_G_pub.active_player);
+            //m_G_pub.active_player++;
          }
          if ( m_Player_recv )
          {
@@ -1147,6 +1158,7 @@ void dealer::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "Deal: Exit" << std::endl;
 #endif
+            //TIMER(7);
           }
           break;
        case EndHand:
@@ -1262,8 +1274,9 @@ void dealer::manage_state ()
              //  one for the dealer : display card on GUI
              m_G_pub.dealer_cards[0] = Next_Card ();
              mw->dealer_value->show();
-             std::string d = std::to_string(card_value(m_G_pub.dealer_cards));
-             mw->dealer_value->label(d.c_str());
+             std::string d1 = std::to_string(card_value(m_G_pub.dealer_cards));
+             strcpy(dval,d1.c_str());
+             mw->dealer_value->label(dval);
              mw->card_to_string((&mw->card1), m_G_pub.dealer_cards[0]);
              
              //  one for each player
@@ -1271,46 +1284,54 @@ void dealer::manage_state ()
              {
                m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
                playerValues[i] = card_value ( m_G_pub.p[ i ].cards);
-               std::string p_1 = std::to_string(playerValues[i]);
+               std::string pvalue = std::to_string(card_value ( m_G_pub.p[ i ].cards));
 
-               switch(i+1){
-                   case 1:
+               switch(i){
+                   case 0:
+                     strcpy(p1,pvalue.c_str());
                      mw->card_to_string((&mw->card1_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player1_value->label(p_1.c_str());
+                     mw->player1_value->label(p1);
+                     break;
+                   case 1:
+                     strcpy(p2,pvalue.c_str());
+                     mw->card_to_string((&mw->card2_1), m_G_pub.p[ i ].cards[ 0 ]);
+                     mw->player2_value->label(p2);
                      break;
                    case 2:
-                     mw->card_to_string((&mw->card2_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player2_value->label(p_1.c_str());
+                     strcpy(p3,pvalue.c_str());
+                     mw->card_to_string((&mw->card3_1), m_G_pub.p[ i ].cards[ 0 ]);
+                     mw->player3_value->label(p3);
                      break;
                    case 3:
-                     mw->card_to_string((&mw->card3_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player3_value->label(p_1.c_str());
+                     strcpy(p4,pvalue.c_str());
+                     mw->card_to_string((&mw->card4_1), m_G_pub.p[ i ].cards[ 0 ]);
+                     mw->player4_value->label(p4);
                      break;
                    case 4:
-                     mw->card_to_string((&mw->card4_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player4_value->label(p_1.c_str());
+                     strcpy(p5,pvalue.c_str());
+                     mw->card_to_string((&mw->card5_1), m_G_pub.p[ i ].cards[ 0 ]);
+                     mw->player5_value->label(p5);
                      break;
                    case 5:
-                     mw->card_to_string((&mw->card5_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player5_value->label(p_1.c_str());
+                     strcpy(p6,pvalue.c_str());
+                     mw->card_to_string((&mw->card6_1), m_G_pub.p[ i ].cards[ 0 ]);
+                     mw->player6_value->label(p6);
                      break;
                    case 6:
-                     mw->card_to_string((&mw->card6_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player6_value->label(p_1.c_str());
-                     break;
-                   case 7:
+                     strcpy(p7,pvalue.c_str());
                      mw->card_to_string((&mw->card7_1), m_G_pub.p[ i ].cards[ 0 ]);
-                     mw->player7_value->label(p_1.c_str());
+                     mw->player7_value->label(p7);
                      break;
                  }
              }
              // and the second card to the first player
              m_G_pub.p [ 0 ]. cards [1] = Next_Card ();
              playerValues[0] = card_value ( m_G_pub.p[ 0 ].cards);
-             std::string pvalue = std::to_string(playerValues[0]);
+             std::string p = std::to_string(card_value ( m_G_pub.p[ 0 ].cards));
+             strcpy(p1,p.c_str());
 
              mw->card_to_string((&mw->card1_2), m_G_pub.p [ 0 ]. cards [1]);
-             mw->player1_value->label(pvalue.c_str());
+             mw->player1_value->label(p1);
 
              // set to the player
              m_G_pub.active_player = 0;
@@ -1356,253 +1377,176 @@ void dealer::manage_state ()
                 m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
                 g_io->publish ( m_G_pub );
                 playerValues[m_G_pub.active_player] = card_value ( m_G_pub.p[ m_G_pub.active_player ].cards);
-                std::string pvalue = std::to_string(playerValues[m_G_pub.active_player]);
+                std::string value = std::to_string(card_value ( m_G_pub.p[ m_G_pub.active_player ].cards));
 
                 switch(m_G_pub.active_player){
-                   case 1:
-                     mw->player1_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card1_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
+                   case 0:
+                     strcpy(p1,value.c_str());
+                     mw->player1_value->label(p1);
+                     if(i==0)
+		       mw->card_to_string((&mw->card1_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
                          mw->card_to_string((&mw->card1_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
+                     else if(i==2)
                          mw->card_to_string((&mw->card1_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
+                     else if(i==3)
                          mw->card_to_string((&mw->card1_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
+                     else if(i==4)
                          mw->card_to_string((&mw->card1_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
+                     else if(i==5)
                          mw->card_to_string((&mw->card1_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
+                     else if(i==6)
                          mw->card_to_string((&mw->card1_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
+                     else if(i==7)
                          mw->card_to_string((&mw->card1_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
+                     else if(i==8)
                          mw->card_to_string((&mw->card1_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
+                     else if(i==9)
                          mw->card_to_string((&mw->card1_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
+                     break;
+                   case 1:
+                     strcpy(p2,value.c_str());
+                     mw->player2_value->label(p2);
+                     if(i==0)
+                         mw->card_to_string((&mw->card2_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
+                         mw->card_to_string((&mw->card2_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==2)
+                         mw->card_to_string((&mw->card2_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==3)
+                         mw->card_to_string((&mw->card2_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==4)
+                         mw->card_to_string((&mw->card2_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==5)
+                         mw->card_to_string((&mw->card2_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==6)
+                         mw->card_to_string((&mw->card2_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==7)
+                         mw->card_to_string((&mw->card2_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==8) 
+                         mw->card_to_string((&mw->card2_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==9)
+                         mw->card_to_string((&mw->card2_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
                      break;
                    case 2:
-                     mw->player2_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card2_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
-                         mw->card_to_string((&mw->card2_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
-                         mw->card_to_string((&mw->card2_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
-                         mw->card_to_string((&mw->card2_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
-                         mw->card_to_string((&mw->card2_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
-                         mw->card_to_string((&mw->card2_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
-                         mw->card_to_string((&mw->card2_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
-                         mw->card_to_string((&mw->card2_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
-                         mw->card_to_string((&mw->card2_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
-                         mw->card_to_string((&mw->card2_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
+                     strcpy(p3,value.c_str());
+                     mw->player3_value->label(p3);
+                     if(i==0)
+                         mw->card_to_string((&mw->card3_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
+                         mw->card_to_string((&mw->card3_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==2)
+                         mw->card_to_string((&mw->card3_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==3)
+                         mw->card_to_string((&mw->card3_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==4)
+                         mw->card_to_string((&mw->card3_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==5)
+                         mw->card_to_string((&mw->card3_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==6)
+                         mw->card_to_string((&mw->card3_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==7)
+                         mw->card_to_string((&mw->card3_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==8)
+                         mw->card_to_string((&mw->card3_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==9)
+                         mw->card_to_string((&mw->card3_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
                      break;
                    case 3:
-                     mw->player3_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card3_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
-                         mw->card_to_string((&mw->card3_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
-                         mw->card_to_string((&mw->card3_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
-                         mw->card_to_string((&mw->card3_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
-                         mw->card_to_string((&mw->card3_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
-                         mw->card_to_string((&mw->card3_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
-                         mw->card_to_string((&mw->card3_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
-                         mw->card_to_string((&mw->card3_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
-                         mw->card_to_string((&mw->card3_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
-                         mw->card_to_string((&mw->card3_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
+                     strcpy(p4,value.c_str());
+                     mw->player4_value->label(p4);
+                     if(i==0)
+                         mw->card_to_string((&mw->card4_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
+                         mw->card_to_string((&mw->card4_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==2)
+                         mw->card_to_string((&mw->card4_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==3)
+                         mw->card_to_string((&mw->card4_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==4)
+                         mw->card_to_string((&mw->card4_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==5)
+                         mw->card_to_string((&mw->card4_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==6)
+                         mw->card_to_string((&mw->card4_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==7)
+                         mw->card_to_string((&mw->card4_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==8)
+                         mw->card_to_string((&mw->card4_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==9)
+                         mw->card_to_string((&mw->card4_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
                      break;
                    case 4:
-                     mw->player4_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card4_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
-                         mw->card_to_string((&mw->card4_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
-                         mw->card_to_string((&mw->card4_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
-                         mw->card_to_string((&mw->card4_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
-                         mw->card_to_string((&mw->card4_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
-                         mw->card_to_string((&mw->card4_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
-                         mw->card_to_string((&mw->card4_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
-                         mw->card_to_string((&mw->card4_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
-                         mw->card_to_string((&mw->card4_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
-                         mw->card_to_string((&mw->card4_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
+                     strcpy(p5,value.c_str());
+                     mw->player5_value->label(p5);
+                     if(i==0)
+                         mw->card_to_string((&mw->card5_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
+                         mw->card_to_string((&mw->card5_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==2)
+                         mw->card_to_string((&mw->card5_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==3)
+                         mw->card_to_string((&mw->card5_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==4)
+                         mw->card_to_string((&mw->card5_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==5)
+                         mw->card_to_string((&mw->card5_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==6)
+                         mw->card_to_string((&mw->card5_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==7)
+                         mw->card_to_string((&mw->card5_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==8)
+                         mw->card_to_string((&mw->card5_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==9)
+                         mw->card_to_string((&mw->card5_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
                      break;
                    case 5:
-                     mw->player5_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card5_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
-                         mw->card_to_string((&mw->card5_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
-                         mw->card_to_string((&mw->card5_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
-                         mw->card_to_string((&mw->card5_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
-                         mw->card_to_string((&mw->card5_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
-                         mw->card_to_string((&mw->card5_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
-                         mw->card_to_string((&mw->card5_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
-                         mw->card_to_string((&mw->card5_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
-                         mw->card_to_string((&mw->card5_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
-                         mw->card_to_string((&mw->card5_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
+                     strcpy(p6,value.c_str());
+                     mw->player6_value->label(p6);
+                     if(i==0)
+                         mw->card_to_string((&mw->card6_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==1)
+                         mw->card_to_string((&mw->card6_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==2)
+                         mw->card_to_string((&mw->card6_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==3)
+                         mw->card_to_string((&mw->card6_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==4)
+                         mw->card_to_string((&mw->card6_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==5)
+                         mw->card_to_string((&mw->card6_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==6)
+                         mw->card_to_string((&mw->card6_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==7)
+                         mw->card_to_string((&mw->card6_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==8)
+                         mw->card_to_string((&mw->card6_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
+                     else if(i==9)
+                         mw->card_to_string((&mw->card6_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
                      break;
                    case 6:
-                     mw->player6_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
-                         mw->card_to_string((&mw->card6_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
-                         mw->card_to_string((&mw->card6_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
-                         mw->card_to_string((&mw->card6_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
-                         mw->card_to_string((&mw->card6_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
-                         mw->card_to_string((&mw->card6_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
-                         mw->card_to_string((&mw->card6_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
-                         mw->card_to_string((&mw->card6_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
-                         mw->card_to_string((&mw->card6_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
-                         mw->card_to_string((&mw->card6_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
-                         mw->card_to_string((&mw->card6_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
-                     break;
-                   case 7:
-                     mw->player7_value->label(pvalue.c_str());
-                     switch(i){
-                       case 0:
+                     strcpy(p7,value.c_str());
+                     mw->player7_value->label(p7);
+                     if(i==0)
                          mw->card_to_string((&mw->card7_1), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 1:
+                     else if(i==1)
                          mw->card_to_string((&mw->card7_2), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 2:
+                     else if(i==2)
                          mw->card_to_string((&mw->card7_3), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 3:
+                     else if(i==3)
                          mw->card_to_string((&mw->card7_4), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 4:
+                     else if(i==4)
                          mw->card_to_string((&mw->card7_5), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 5:
+                     else if(i==5)
                          mw->card_to_string((&mw->card7_6), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 6:
+                     else if(i==6)
                          mw->card_to_string((&mw->card7_7), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 7:
+                     else if(i==7)
                          mw->card_to_string((&mw->card7_8), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 8:
+                     else if(i==8)
                          mw->card_to_string((&mw->card7_9), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                       case 9:
+                     else if(i==9)
                          mw->card_to_string((&mw->card7_10), m_G_pub.p[ m_G_pub.active_player ].cards[ i ]);
-                         break;
-                     };
                      break;
                  }
              }
@@ -1617,12 +1561,13 @@ void dealer::manage_state ()
             // note: except for purists, dealing a card face down or
             // waiting to deal it now makes no difference.
             unsigned int i=1;
+            std::string s;
             while ( card_value ( m_G_pub.dealer_cards ) < 17 ) //changed Hand_Value to card_value
             {
                m_G_pub.dealer_cards[i] = Next_Card ();
-               std::string s = std::to_string(card_value( m_G_pub.dealer_cards ));
-               const char *dvalue = s.c_str();
-               mw->dealer_value->label(dvalue);
+               s = std::to_string(card_value( m_G_pub.dealer_cards ));
+               strcpy(dval,s.c_str());
+               mw->dealer_value->label(dval);
                switch(i){
                  case 1:
                    mw->card_to_string((&mw->card2), m_G_pub.dealer_cards[i]);
@@ -1651,7 +1596,7 @@ void dealer::manage_state ()
                  case 9:
                    mw->card_to_string((&mw->card10), m_G_pub.dealer_cards[i]);
                    break;
-               };
+               }
                i++;
             }
             m_G_pub.gstate = end_hand;
@@ -1733,8 +1678,122 @@ void dealer::next_player ()
 
 }
 
+void MainWindow::deletePlayer(int player)
+{
+  switch(player){
+    //hide player 1 value and cards
+    case 0:
+      player1_value->hide();
+      card1_1->hide();
+      card1_2->hide();
+      card1_3->hide();
+      card1_4->hide();
+      card1_5->hide();
+      card1_6->hide();
+      card1_7->hide();
+      card1_8->hide();
+      card1_9->hide();
+      card1_10->hide();
+      break;
+    //hide player 2 value and cards
+    case 1:
+      player2_value->hide();
+      card2_1->hide();
+      card2_2->hide();
+      card2_3->hide();
+      card2_4->hide();
+      card2_5->hide();
+      card2_6->hide();
+      card2_7->hide();
+      card2_8->hide();
+      card2_9->hide();
+      card2_10->hide();
+      break;
+    //hide player 3 value and cards
+    case 2:
+      player3_value->hide();
+      card3_1->hide();
+      card3_2->hide();
+      card3_3->hide();
+      card3_4->hide();
+      card3_5->hide();
+      card3_6->hide();
+      card3_7->hide();
+      card3_8->hide();
+      card3_9->hide();
+      card3_10->hide();
+      break;
+    //hide player 4 value and cards
+    case 3:
+      player4_value->hide();
+      card4_1->hide();
+      card4_2->hide();
+      card4_3->hide();
+      card4_4->hide();
+      card4_5->hide();
+      card4_6->hide();
+      card4_7->hide();
+      card4_8->hide();
+      card4_9->hide();
+      card4_10->hide();
+      break;
+    //hide player 5 value and cards
+    case 4:
+      player5_value->hide();
+      card5_1->hide();
+      card5_2->hide();
+      card5_3->hide();
+      card5_4->hide();
+      card5_5->hide();
+      card5_6->hide();
+      card5_7->hide();
+      card5_8->hide();
+      card5_9->hide();
+      card5_10->hide();
+      break;
+    //hide player 6 value and cards
+    case 5:
+      player6_value->hide();
+      card6_1->hide();
+      card6_2->hide();
+      card6_3->hide();
+      card6_4->hide();
+      card6_5->hide();
+      card6_6->hide();
+      card6_7->hide();
+      card6_8->hide();
+      card6_9->hide();
+      card6_10->hide();
+      break;
+    //hide player 7 value and cards
+    case 6:
+      player7_value->hide();
+      card7_1->hide();
+      card7_2->hide();
+      card7_3->hide();
+      card7_4->hide();
+      card7_5->hide();
+      card7_6->hide();
+      card7_7->hide();
+      card7_8->hide();
+      card7_9->hide();
+      card7_10->hide();
+      break;
+  }
+}
+
 void dealer::end_game ()
 {
+/*
+  free(dval);
+  free(p1);
+  free(p2);
+  free(p3);
+  free(p4);
+  free(p5);
+  free(p6);
+  free(p7);
+*/
   exit(0);
 }
 

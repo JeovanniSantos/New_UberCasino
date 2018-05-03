@@ -57,11 +57,11 @@ void Deck::create_infinite_deck(){
 // Function to Setup Deck Type
   void Deck::SetDeckType(int i){
 	deck_type=(Type)(i-1);
-    	if(deck_type==Type::test){
+    	if(i==1){
 		Deck::create_test_deck();
-	}else if(deck_type==Type::eight_deck){
+	}else if(i==2){
 		Deck::create_eight_deck();
-	}else{
+	}else if(i==3){
 		Deck::create_infinite_deck();
 	}
   }

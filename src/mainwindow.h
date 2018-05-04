@@ -105,6 +105,7 @@ class MainWindow : public Fl_Window{
 
       //player 1
       Fl_Box* player1_value;
+      Fl_Box* player1_status;
       Fl_Box* card1_1;
       Fl_Box* card1_2;
       Fl_Box* card1_3;
@@ -118,6 +119,7 @@ class MainWindow : public Fl_Window{
 
       //player 2
       Fl_Box* player2_value;
+      Fl_Box* player2_status;
       Fl_Box* card2_1;
       Fl_Box* card2_2;
       Fl_Box* card2_3;
@@ -131,6 +133,7 @@ class MainWindow : public Fl_Window{
 
       //player 3
       Fl_Box* player3_value;
+      Fl_Box* player3_status;
       Fl_Box* card3_1;
       Fl_Box* card3_2;
       Fl_Box* card3_3;
@@ -144,6 +147,7 @@ class MainWindow : public Fl_Window{
 
       //player 4
       Fl_Box* player4_value;
+      Fl_Box* player4_status;
       Fl_Box* card4_1;
       Fl_Box* card4_2;
       Fl_Box* card4_3;
@@ -157,6 +161,7 @@ class MainWindow : public Fl_Window{
 
       //player 5
       Fl_Box* player5_value;
+      Fl_Box* player5_status;
       Fl_Box* card5_1;
       Fl_Box* card5_2;
       Fl_Box* card5_3;
@@ -170,6 +175,7 @@ class MainWindow : public Fl_Window{
 
       //player 6
       Fl_Box* player6_value;
+      Fl_Box* player6_status;
       Fl_Box* card6_1;
       Fl_Box* card6_2;
       Fl_Box* card6_3;
@@ -183,6 +189,7 @@ class MainWindow : public Fl_Window{
 
       //player 7
       Fl_Box* player7_value;
+      Fl_Box* player7_status;
       Fl_Box* card7_1;
       Fl_Box* card7_2;
       Fl_Box* card7_3;

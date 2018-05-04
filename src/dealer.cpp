@@ -84,6 +84,7 @@ void MainWindow::resetGame(){
       //player 1
       player1_value->label("player1");
       player1_value->hide();
+      player1_status->hide();
       card1_1->hide();
       card1_2->hide();
       card1_3->hide();
@@ -98,6 +99,7 @@ void MainWindow::resetGame(){
       //player 2
       player2_value->label("player2");
       player2_value->hide();
+      player2_status->hide();
       card2_1->hide();
       card2_2->hide();
       card2_3->hide();
@@ -112,6 +114,7 @@ void MainWindow::resetGame(){
       //player 3
       player3_value->label("player3");
       player3_value->hide();
+      player3_status->hide();
       card3_1->hide();
       card3_2->hide();
       card3_3->hide();
@@ -126,6 +129,7 @@ void MainWindow::resetGame(){
       //player 4
       player4_value->label("player4");
       player4_value->hide();
+      player4_status->hide();
       card4_1->hide();
       card4_2->hide();
       card4_3->hide();
@@ -140,6 +144,7 @@ void MainWindow::resetGame(){
       //player 5
       player5_value->label("player5");
       player5_value->hide();
+      player5_status->hide();
       card5_1->hide();
       card5_2->hide();
       card5_3->hide();
@@ -154,6 +159,7 @@ void MainWindow::resetGame(){
       //player 6
       player6_value->label("player6");
       player6_value->hide();
+      player6_status->hide();
       card6_1->hide();
       card6_2->hide();
       card6_3->hide();
@@ -168,6 +174,7 @@ void MainWindow::resetGame(){
       //player 7
       player7_value->label("player7");
       player7_value->hide();
+      player7_status->hide();
       card7_1->hide();
       card7_2->hide();
       card7_3->hide();
@@ -367,6 +374,8 @@ void MainWindow::create_player1(){
     int y = 50;
     player1_value = new Fl_Box(x-110,y,100,50,"player1");
     player1_value->box(FL_BORDER_BOX);
+    player1_status = new Fl_Box(x-110,y+50,100,50,"player1");
+    player1_status->box(FL_BORDER_BOX);
     card1_1 = new Fl_Box(x,y,69,106); 
     card1_1->image(AC);
     card1_1->box(FL_BORDER_BOX);
@@ -400,6 +409,7 @@ void MainWindow::create_player1(){
     card1_10 = new Fl_Box(x,y,69,106); 
     card1_10->box(FL_BORDER_BOX);
 
+    player1_status->hide();
     player1_value->hide();
     card1_1->hide();
     card1_2->hide();
@@ -420,6 +430,8 @@ void MainWindow::create_player7(){
     int y = 50;
     player7_value = new Fl_Box(x+170,y,100,50,"player7");
     player7_value->box(FL_BORDER_BOX);
+    player7_status = new Fl_Box(x+170,y+50,100,50,"player7");
+    player7_status->box(FL_BORDER_BOX);
 
     card7_1 = new Fl_Box(x,y,69,106);   
     card7_1->box(FL_BORDER_BOX);
@@ -452,6 +464,7 @@ void MainWindow::create_player7(){
     card7_10 = new Fl_Box(x,y,69,106); 
     card7_10->box(FL_BORDER_BOX);
 
+    player7_status->hide();
     player7_value->hide();
     card7_1->hide();
     card7_2->hide();
@@ -472,6 +485,8 @@ void MainWindow::create_player2(){
     int y = 200;
     player2_value = new Fl_Box(x-110,y,100,50,"player2");
     player2_value->box(FL_BORDER_BOX);
+    player2_status = new Fl_Box(x-110,y+50,100,50,"player2");
+    player2_status->box(FL_BORDER_BOX);
     card2_1 = new Fl_Box(x,y,69,106);  
     card2_1->box(FL_BORDER_BOX);
     x=x+20;
@@ -503,6 +518,7 @@ void MainWindow::create_player2(){
     card2_10 = new Fl_Box(x,y,69,106);  
     card2_10->box(FL_BORDER_BOX);
 
+    player2_status->hide();
     player2_value->hide();
     card2_1->hide();
     card2_2->hide();
@@ -514,6 +530,7 @@ void MainWindow::create_player2(){
     card2_8->hide();
     card2_9->hide();
     card2_10->hide();
+
 }
 
 void MainWindow::create_player6(){
@@ -522,6 +539,8 @@ void MainWindow::create_player6(){
     int y = 200;
     player6_value = new Fl_Box(x+170,y,100,50,"player6");
     player6_value->box(FL_BORDER_BOX);
+    player6_status = new Fl_Box(x+170,y+50,100,50,"player6");
+    player6_status->box(FL_BORDER_BOX);
 
     card6_1 = new Fl_Box(x,y,69,106); 
     card6_1->box(FL_BORDER_BOX);
@@ -554,6 +573,7 @@ void MainWindow::create_player6(){
     card6_10 = new Fl_Box(x,y,69,106); 
     card6_10->box(FL_BORDER_BOX);
 
+    player6_status->hide();
     player6_value->hide();
     card6_1->hide();
     card6_2->hide();
@@ -565,6 +585,7 @@ void MainWindow::create_player6(){
     card6_8->hide();
     card6_9->hide();
     card6_10->hide();
+
 }
 
 
@@ -574,6 +595,8 @@ void MainWindow::create_player3(){
     int y = 350;
     player3_value = new Fl_Box(x-110,y,100,50,"player3");
     player3_value->box(FL_BORDER_BOX);
+    player3_status = new Fl_Box(x-110,y+50,100,50,"player3");
+    player3_status->box(FL_BORDER_BOX);
     card3_1 = new Fl_Box(x,y,69,106); 
     card3_1->box(FL_BORDER_BOX);
     x=x+20;
@@ -605,6 +628,7 @@ void MainWindow::create_player3(){
     card3_10 = new Fl_Box(x,y,69,106); 
     card3_10->box(FL_BORDER_BOX);
 
+    player3_status->hide();
     player3_value->hide();
     card3_1->hide();
     card3_2->hide();
@@ -615,7 +639,8 @@ void MainWindow::create_player3(){
     card3_7->hide();
     card3_8->hide();
     card3_9->hide();
-    card3_10->hide();  
+    card3_10->hide(); 
+
 }
 
 void MainWindow::create_player5(){
@@ -624,6 +649,8 @@ void MainWindow::create_player5(){
     int y = 350;
     player5_value = new Fl_Box(x+170,y,100,50,"player5");
     player5_value->box(FL_BORDER_BOX);
+    player5_status = new Fl_Box(x+170,y+50,100,50,"player5");
+    player5_status->box(FL_BORDER_BOX);
 
     card5_1 = new Fl_Box(x,y,69,106);   
     card5_1->box(FL_BORDER_BOX);
@@ -656,6 +683,7 @@ void MainWindow::create_player5(){
     card5_10 = new Fl_Box(x,y,69,106);   
     card5_10->box(FL_BORDER_BOX);
 
+    player5_status->hide();
     player5_value->hide();
     card5_1->hide();
     card5_2->hide();
@@ -667,6 +695,7 @@ void MainWindow::create_player5(){
     card5_8->hide();
     card5_9->hide();
     card5_10->hide();
+
 }
 
 void MainWindow::create_player4(){
@@ -675,6 +704,8 @@ void MainWindow::create_player4(){
     int y = 350;
     player4_value = new Fl_Box(x+45,y+145,100,50,"player4");
     player4_value->box(FL_BORDER_BOX);
+    player4_status = new Fl_Box(x+100,y+200,100,50,"player4");
+    player4_status->box(FL_BORDER_BOX);
 
     card4_1 = new Fl_Box(x,y,69,106);  
     card4_1->box(FL_BORDER_BOX);
@@ -707,6 +738,7 @@ void MainWindow::create_player4(){
     card4_10 = new Fl_Box(x,y,69,106); 
     card4_10->box(FL_BORDER_BOX);
 
+    player4_status->hide();
     player4_value->hide();
     card4_1->hide();
     card4_2->hide();
@@ -770,6 +802,7 @@ void MainWindow::create_dealer_group(){
     card8->hide();
     card9->hide();
     card10->hide();
+
 }
 
 StartWindow::StartWindow(int w, int h, const char* title, const char* uuid_in):Fl_Window(w,h,title){
@@ -1603,23 +1636,87 @@ void dealer::manage_state ()
             g_io->publish ( m_G_pub );
             
             int dealer_points = card_value ( m_G_pub.dealer_cards );
-
-            int player_points = card_value ( m_G_pub.p[m_G_pub.active_player].cards );
+            int player_points;
+	    
+            for(unsigned int i = 0; i < m_number_of_players; i++)
+	    {
+              player_points = playerValues[i];
 #ifdef DEBUG
-            std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
+              std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
 #endif
-            if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
-            {
+              if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
+              {
 #ifdef DEBUG
-               std::cout << "Player Wins" << std::endl;
+                 std::cout << "Player Wins" << std::endl;
 #endif
-            }
-            else
-            {
+                 switch(i){
+                   case 0:
+                     mw->player1_status->label("wins");
+                     mw->player1_status->show();
+                     break;
+                   case 1:
+                     mw->player2_status->label("wins");
+                     mw->player2_status->show();
+                     break;
+                   case 2:
+                     mw->player3_status->label("wins");
+                     mw->player3_status->show();
+                     break;
+                   case 3:
+                     mw->player4_status->label("wins");
+                     mw->player4_status->show();
+                     break;
+                   case 4:
+                     mw->player5_status->label("wins");
+                     mw->player5_status->show();
+                     break;
+                   case 5:
+                     mw->player6_status->label("wins");
+                     mw->player6_status->show();
+                     break;
+                   case 6:
+                     mw->player7_status->label("wins");
+                     mw->player7_status->show();
+                     break;
+                 }
+              }
+              else
+              {
 #ifdef DEBUG
-               std::cout << "Dealer Wins" << std::endl;
+                 std::cout << "Dealer Wins" << std::endl;
 #endif
-            }
+                 switch(i){
+                   case 0:
+                     mw->player1_status->label("lose");
+                     mw->player1_status->show();
+                     break;
+                   case 1:
+                     mw->player2_status->label("lose");
+                     mw->player2_status->show();
+                     break;
+                   case 2:
+                     mw->player3_status->label("lose");
+                     mw->player3_status->show();
+                     break;
+                   case 3:
+                     mw->player4_status->label("lose");
+                     mw->player4_status->show();
+                     break;
+                   case 4:
+                     mw->player5_status->label("lose");
+                     mw->player5_status->show();
+                     break;
+                   case 5:
+                     mw->player6_status->label("lose");
+                     mw->player6_status->show();
+                     break;
+                   case 6:
+                     mw->player7_status->label("lose");
+                     mw->player7_status->show();
+                     break;
+                 }
+              }
+	    }
             mw->start->activate();
           }
           break;

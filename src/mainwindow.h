@@ -205,6 +205,7 @@ class MainWindow : public Fl_Window{
       Fl_Button* quit;
       Fl_Input* name;
 
+      // Function used to create all boxes and components needed to display player and dealer cards
       void create_dealer_group();
       void create_player1();
       void create_player2();
@@ -214,9 +215,13 @@ class MainWindow : public Fl_Window{
       void create_player6();
       void create_player7();
 
+      // Called to hide all player attributes
       void deletePlayer(int player);
 
+      //Converts card to string and uses a switch statement to get the right image and put it on the box
       void card_to_string(Fl_Box** box, UberCasino::card_t c);
+
+      //Hides all cards from all Players and Dealer to start a new game
       void resetGame();
 
    private:

@@ -16,7 +16,7 @@ bool deck_selected = false;
 
 #include "callback.h" // uses the PTR var
 //----------------------------------------------------
-
+// Returns the name of the Dealer
 const char* StartWindow::get_dealer_name(){
     return dealer_name;
 }
@@ -27,6 +27,14 @@ void StartWindow::cb_start(Fl_Widget* o, void* v) {
     ( (StartWindow*)v )->cb_start_i(o,v);
 }
 
+/****************************************************
+* Function that handles the callback for start window 
+* start button. Function checks if a name has been entered
+* and type of deck has been chosen. If not, the window shows
+* a message and redraws.
+* If everything is entered, Dealer name is saved and mainWindow
+* is shown.
+*****************************************************/
 void StartWindow::cb_start_i(Fl_Widget* b, void* d) {
     dealer_name = name->value();
     if (strcmp(dealer_name, "") == 0)
@@ -58,7 +66,7 @@ void StartWindow::cb_start_i(Fl_Widget* b, void* d) {
 }
 
 //----------------------------------------------------
-
+// Callback for deck type radio button. 
 void StartWindow::cb_radio(Fl_Widget* o, void* v) {
  
     ( (StartWindow*)v )->cb_radio_i(o,v);
@@ -139,10 +147,9 @@ int main ( int argc, char* argv[] )
 
    const std::string tmp = boost::uuids::to_string(uuid);
    value = tmp.c_str();
-
+    
+   // run start window
    (*PTR).setStartWindow(value);
    return Fl::run();
-
-   //return 0;
 }
 

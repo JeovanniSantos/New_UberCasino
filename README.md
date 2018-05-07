@@ -1,5 +1,12 @@
 # UberCasino
 
+--------UPDATE--------------
+Make requires FLTK files and searches:
+/usr/local/include/ and /usr/local/lib/
+without the required files it will not compile
+
+
+
 DO NOT USE. YET. More changes to come sunday.
 
 
